@@ -5,11 +5,14 @@
  */
 package Views;
 
-import Model.User;
+import Model.Usuario;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,12 +21,60 @@ import javax.swing.JOptionPane;
  */
 public class Login extends javax.swing.JFrame {
 
+    Connection conn = null;
+    Statement stmt = null;
+
     /**
      * Creates new form Login
      */
-    public Login() {
+    public Login() throws ClassNotFoundException, SQLException {
+        JOptionPane.showMessageDialog(rootPane, "Usuário de Desenvolvimento: admin  senha: admin");
+        
         this.setLocationRelativeTo(null);
         initComponents();
+
+        Class.forName("com.mysql.jdbc.Driver");
+
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost?user=root&password=");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco   : " + e.getMessage());
+        }
+        stmt = conn.createStatement();
+
+        int i = stmt.executeUpdate("CREATE  DATABASE IF NOT EXISTS erp");
+        stmt.executeQuery("USE erp");
+
+        if (i == 1) {
+
+            stmt.execute("CREATE TABLE `tb_cliente` (\n"
+                    + " `id_cliente` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_cliente` varchar(200) NOT NULL,\n"
+                    + " `idade_cliente` int(3) NOT NULL,\n"
+                    + " `celular_cliente` varchar(20) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_cliente`)\n"
+                    + ") ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1\n"
+            );
+
+            stmt.execute("CREATE TABLE `tb_produto` (\n"
+                    + " `id_produto` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_produto` varchar(200) NOT NULL,\n"
+                    + " `desc_produto` varchar(300) NOT NULL,\n"
+                    + " `preco_produto` double NOT NULL,\n"
+                    + " `quantidade_produto` int(3) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_produto`)\n"
+                    + ") ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1\n"
+            );
+
+            stmt.execute("CREATE TABLE `tb_usuario` (\n"
+                    + " `id_usuario` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_usuario` varchar(100) NOT NULL,\n"
+                    + " `senha_usuario` varchar(20) NOT NULL,\n"
+                    + " `telefone_usuario` varchar(20) NOT NULL,\n"
+                    + " `perfil_usuario` varchar(20) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_usuario`)\n"
+                    + ") ENGINE=InnoDB DEFAULT CHARSET=latin1");
+        }
     }
 
     /**
@@ -36,10 +87,10 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         btnLogin = new javax.swing.JButton();
-        txtUser = new javax.swing.JTextField();
+        txtUsuario = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JPasswordField();
+        txtPass = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(102, 204, 0));
@@ -77,8 +128,8 @@ public class Login extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtUser)
-                            .addComponent(txtPassword))))
+                            .addComponent(txtUsuario)
+                            .addComponent(txtPass))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -87,11 +138,11 @@ public class Login extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -102,13 +153,32 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new Principal().setVisible(true);
-        this.dispose();
+        try {
+            String nome = txtUsuario.getText();
+            String senha = txtPass.getText();
+            String sql = "SELECT * FROM tb_usuario WHERE nome_usuario = '" + nome + "'" + " AND senha_usuario = '" + senha + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                if(rs.getString("perfil_usuario").equals("administrador")){
+                new Principal().setVisible(true);
+                this.dispose();
+                } else if(rs.getString("perfil_usuario").equals("funcionario")){
+                    new Principal("funcionario").setVisible(true);
+                    this.dispose();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_btnLoginActionPerformed
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws ClassNotFoundException, SQLException {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -131,54 +201,17 @@ public class Login extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost?user=root&password=");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco   : " + e.getMessage());
-        }
-        Statement stmt = conn.createStatement();
 
-        int i = stmt.executeUpdate("CREATE  DATABASE IF NOT EXISTS erp");
-        stmt.executeQuery("USE erp");
-
-        if (i == 1) {
-
-            stmt.execute("CREATE TABLE `tb_cliente` (\n"
-                    + " `id_cliente` int(11) NOT NULL AUTO_INCREMENT,\n"
-                    + " `nome_cliente` varchar(200) NOT NULL,\n"
-                    + " `idade_cliente` int(3) NOT NULL,\n"
-                    + " `celular_cliente` varchar(20) NOT NULL,\n"
-                    + " PRIMARY KEY (`id_cliente`)\n"
-                    + ") ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1\n"
-            );
-
-            stmt.execute("CREATE TABLE `tb_produto` (\n"
-                    + " `id_produto` int(11) NOT NULL AUTO_INCREMENT,\n"
-                    + " `nome_produto` varchar(200) NOT NULL,\n"
-                    + " `desc_produto` varchar(300) NOT NULL,\n"
-                    + " `preco_produto` double NOT NULL,\n"
-                    + " `quantidade_produto` int(3) NOT NULL,\n"
-                    + " PRIMARY KEY (`id_produto`)\n"
-                    + ") ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1\n"
-            );
-
-            stmt.execute("CREATE TABLE `tb_usuario` (\n"
-                    + " `id_usuario` int(11) NOT NULL AUTO_INCREMENT,\n"
-                    + " `nome_usuario` varchar(100) NOT NULL,\n"
-                    + " `senha_usuario` varchar(20) NOT NULL,\n"
-                    + " `telefone_usuario` varchar(20) NOT NULL,\n"
-                    + " `perfil_usuario` varchar(20) NOT NULL,\n"
-                    + " PRIMARY KEY (`id_usuario`)\n"
-                    + ") ENGINE=InnoDB DEFAULT CHARSET=latin1");
-        } else {
-            System.out.println("O Banco de Dados já existe");
-        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                try {
+                    new Login().setVisible(true);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -187,7 +220,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPasswordField txtPassword;
-    private javax.swing.JTextField txtUser;
+    private javax.swing.JPasswordField txtPass;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

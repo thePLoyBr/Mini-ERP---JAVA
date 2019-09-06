@@ -9,9 +9,14 @@ package Model;
  *
  * @author felip
  */
-public class Pedido {
+public class Usuario extends Pessoa{
 
-    private int id;
-    private String desc;
- 
+    public Usuario(String nome, String senha) {
+        this.nome = nome;
+        this.senha = senha;
+    }
+    
+    public Usuario(){
+        
+    }
 }
