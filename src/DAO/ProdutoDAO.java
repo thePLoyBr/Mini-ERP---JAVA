@@ -30,7 +30,7 @@ public class ProdutoDAO {
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, produto.getName());
             stmt.setString(2, produto.getDesc());
-            stmt.setDouble(3, produto.getPrice());
+            stmt.setFloat(3, produto.getPrice());
             stmt.setInt(4, produto.getQuant());
             stmt.execute();
             stmt.close();
@@ -52,7 +52,7 @@ public class ProdutoDAO {
             stmt.execute();
             stmt.close();
         } catch(Exception ex){
-            throw new RuntimeException("Erro INSERT PRODUTO : ", ex);
+            throw new RuntimeException("Erro UPDATE PRODUTO : ", ex);
         }
     }
     public void excluirProduto(Produto produto){

@@ -6,6 +6,11 @@
 package Views;
 
 import Model.User;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -103,7 +108,7 @@ public class Login extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws ClassNotFoundException, SQLException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -126,7 +131,50 @@ public class Login extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost?user=root&password=");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar com o banco   : " + e.getMessage());
+        }
+        Statement stmt = conn.createStatement();
 
+        int i = stmt.executeUpdate("CREATE  DATABASE IF NOT EXISTS erp");
+        stmt.executeQuery("USE erp");
+
+        if (i == 1) {
+
+            stmt.execute("CREATE TABLE `tb_cliente` (\n"
+                    + " `id_cliente` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_cliente` varchar(200) NOT NULL,\n"
+                    + " `idade_cliente` int(3) NOT NULL,\n"
+                    + " `celular_cliente` varchar(20) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_cliente`)\n"
+                    + ") ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1\n"
+            );
+
+            stmt.execute("CREATE TABLE `tb_produto` (\n"
+                    + " `id_produto` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_produto` varchar(200) NOT NULL,\n"
+                    + " `desc_produto` varchar(300) NOT NULL,\n"
+                    + " `preco_produto` double NOT NULL,\n"
+                    + " `quantidade_produto` int(3) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_produto`)\n"
+                    + ") ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1\n"
+            );
+
+            stmt.execute("CREATE TABLE `tb_usuario` (\n"
+                    + " `id_usuario` int(11) NOT NULL AUTO_INCREMENT,\n"
+                    + " `nome_usuario` varchar(100) NOT NULL,\n"
+                    + " `senha_usuario` varchar(20) NOT NULL,\n"
+                    + " `telefone_usuario` varchar(20) NOT NULL,\n"
+                    + " `perfil_usuario` varchar(20) NOT NULL,\n"
+                    + " PRIMARY KEY (`id_usuario`)\n"
+                    + ") ENGINE=InnoDB DEFAULT CHARSET=latin1");
+        } else {
+            System.out.println("O Banco de Dados já existe");
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -33,7 +33,7 @@ public class Principal extends javax.swing.JFrame {
             cbClientes.addItem(c.getName());
         }
     }
-    
+
     void listarCli() {
         DefaultTableModel modelo = (DefaultTableModel) tabelaClientes.getModel();
         modelo.setNumRows(0);
@@ -62,8 +62,8 @@ public class Principal extends javax.swing.JFrame {
             });
         }
     }
-    
-    void buscarProduto(Produto produto){
+
+    void buscarProduto(Produto produto) {
         DefaultTableModel modelo = (DefaultTableModel) tabelaBuscaProduto.getModel();
         modelo.setNumRows(0);
         ProdutoDAO produtoDAO = new ProdutoDAO();
@@ -105,8 +105,6 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -140,8 +138,6 @@ public class Principal extends javax.swing.JFrame {
         txtDescricaoProduto = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txtQuantidadeProduto = new javax.swing.JTextField();
-        txtPrecoProduto = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         btnCadastrarProduto = new javax.swing.JButton();
         btnAlterarProduto = new javax.swing.JButton();
@@ -149,6 +145,8 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaProdutos = new javax.swing.JTable();
         btnExcluirProduto = new javax.swing.JButton();
+        txtQuantidadeProduto = new javax.swing.JFormattedTextField();
+        txtPrecoProduto = new javax.swing.JFormattedTextField();
         tabelaVenda = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -389,6 +387,13 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
+        txtQuantidadeProduto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#######"))));
+        txtQuantidadeProduto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtQuantidadeProdutoFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout painelProdutosLayout = new javax.swing.GroupLayout(painelProdutos);
         painelProdutos.setLayout(painelProdutosLayout);
         painelProdutosLayout.setHorizontalGroup(
@@ -397,14 +402,33 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelProdutosLayout.createSequentialGroup()
+                        .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(painelProdutosLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(54, 54, 54)
+                                .addComponent(txtCodigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(143, 143, 143)
+                                .addComponent(jLabel6)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelProdutosLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel7)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtDescricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNomeProduto)))
                     .addGroup(painelProdutosLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtQuantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrecoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(painelProdutosLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addGap(11, 11, 11)
+                                .addComponent(txtQuantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(painelProdutosLayout.createSequentialGroup()
+                                .addGap(311, 311, 311)
+                                .addComponent(jLabel9)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtPrecoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnLimparProduto)
                         .addGap(18, 18, 18)
@@ -412,20 +436,7 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnAlterarProduto)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCadastrarProduto))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelProdutosLayout.createSequentialGroup()
-                        .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
-                        .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(painelProdutosLayout.createSequentialGroup()
-                                .addComponent(txtCodigoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(29, 29, 29)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 634, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtDescricaoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(btnCadastrarProduto)))
                 .addContainerGap())
         );
         painelProdutosLayout.setVerticalGroup(
@@ -445,8 +456,8 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(txtQuantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel9)
+                        .addComponent(txtQuantidadeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtPrecoProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(painelProdutosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnCadastrarProduto)
@@ -675,24 +686,36 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCadastrarClienteActionPerformed
 
     private void btnCadastrarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarProdutoActionPerformed
-        
+
         if (!txtCodigoProduto.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Produto já existe");
         } else if (txtNomeProduto.getText().equals("") || txtPrecoProduto.getText().equals("") || txtQuantidadeProduto.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nome - Preço e Quantidade são obrigatórios");
         } else {
             Produto produto = new Produto();
-            produto.setName(txtNomeProduto.getText());
-            produto.setDesc((txtDescricaoProduto.getText().trim().equals("")) ? "Sem Descrição" : txtDescricaoProduto.getText());
-            produto.setPrice(Float.parseFloat(txtPrecoProduto.getText()));
+            produto.setName(txtNomeProduto.getText().toUpperCase());
+            produto.setDesc((txtDescricaoProduto.getText().trim().equals("")) ? "Sem Descrição" : txtDescricaoProduto.getText().toUpperCase());
+
+            if (txtPrecoProduto.getText().contains(",")) {
+                String precoCorreto = txtPrecoProduto.getText().replace(",", ".");
+                produto.setPrice(Float.parseFloat(precoCorreto));
+            } else {
+                produto.setPrice(Float.parseFloat(txtPrecoProduto.getText()));
+            }
+
+            while (txtQuantidadeProduto.getText().contains(",")) {
+                JOptionPane.showMessageDialog(this, "Quantidades devem conter apenas números inteiros");
+                break;
+            } 
+            
             produto.setQuant(Integer.parseInt(txtQuantidadeProduto.getText()));
+
             ProdutoDAO produtoDAO = new ProdutoDAO();
             produtoDAO.cadastrarProduto(produto);
             listarProd();
             String tipo = "produto";
             limparCampos(tipo);
         }
-
     }//GEN-LAST:event_btnCadastrarProdutoActionPerformed
 
     private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
@@ -878,16 +901,24 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_cbClientesActionPerformed
 
     private void txtBuscaProdutoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscaProdutoKeyPressed
-        if(evt.getKeyCode() == 10){
+        if (evt.getKeyCode() == 10) {
             Produto produto = new Produto();
             produto.setName(txtBuscaProduto.getText());
-            
+
             buscarProduto(produto);
-            
-            
+
         }
-        
+
     }//GEN-LAST:event_txtBuscaProdutoKeyPressed
+
+    private void txtQuantidadeProdutoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtQuantidadeProdutoFocusLost
+        if(!txtQuantidadeProduto.getText().equals("")){
+            if(txtQuantidadeProduto.getText().contains("A,B")){
+                JOptionPane.showMessageDialog(null, "CONTEM LETRAS");
+            }
+          JOptionPane.showMessageDialog(null, "Saiu do foco");
+        } 
+    }//GEN-LAST:event_txtQuantidadeProdutoFocusLost
 
     /**
      * @param args the command line arguments
@@ -978,9 +1009,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtIdadeCliente;
     private javax.swing.JTextField txtNomeCliente;
     private javax.swing.JTextField txtNomeProduto;
-    private javax.swing.JTextField txtPrecoProduto;
+    private javax.swing.JFormattedTextField txtPrecoProduto;
     private javax.swing.JTextField txtQuantVenda;
-    private javax.swing.JTextField txtQuantidadeProduto;
+    private javax.swing.JFormattedTextField txtQuantidadeProduto;
     private javax.swing.JTextField txtValorVenda;
     // End of variables declaration//GEN-END:variables
 }
